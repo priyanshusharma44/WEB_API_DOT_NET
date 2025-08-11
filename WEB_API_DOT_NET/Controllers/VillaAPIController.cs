@@ -1,35 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WEB_API_DOT_NET.Data;
 using WEB_API_DOT_NET.Models;
+using WEB_API_DOT_NET.Models.DTO;
 
 namespace WEB_API_DOT_NET.Controllers
 {
+    //[Route("api/[controller]")]
     [Route("api/VillaAPI")]
     [ApiController]
     public class VillaAPIController: ControllerBase
     {
         [HttpGet]
-        public IEnumerable<Villa> GetVillas()
+        public ActionResult <IEnumerable<VillaDTO>> GetVillas()
         {
-            return new List<Villa>
+            return Ok(VillaStore.villaList);
+        }
+        //only one villa why no IEnumerable? cause its for list but
+        //we want only 1 data details so no enum
+
+        [HttpGet("id")]
+        public ActionResult<VillaDTO> GetVillas(int id)
+           
+        {
+            if (id == 0)
             {
-                new Villa
-                {
-                    Id = 1,
-                    Name="RAM"
-                },
-                new Villa
-                {
-                    Id=2,
-                    Name="SHYAM"
-                },
-                new Villa
-                {
-                    Id=3,
-                    Name="HARI"
-                }
+                return BadRequest();
+            }
 
-
-            };
+            var villa = VillaStore.villaList.FirstOrDefault(u => u.Id == id);
+            if (villa == null)
+            {
+                return NotFound();
+            }
+            return Ok(villa);
         }
     }
 }
