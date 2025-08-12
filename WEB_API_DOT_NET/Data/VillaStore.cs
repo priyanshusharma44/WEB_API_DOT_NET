@@ -9,19 +9,21 @@ namespace WEB_API_DOT_NET.Data
                 new VillaDTO
                 {
                     Id=1,
-                    Name="RAM"
+                    Name="RAM",
+                    Description = "ABC"
                 },
                 new VillaDTO
                 {
                     Id=2,
-                    Name="SHYAM"
+                    Name="SHYAM",
+                    Description = "DEF"
                 },
                 new VillaDTO
                 {
                     Id=3,
-                    Name="HARI"
+                    Name="HARI",
+                    Description = "GHI"
                 }
-
 
             };
     }
