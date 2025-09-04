@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WEB_API_DOT_NET.Data;
@@ -13,23 +14,31 @@ namespace WEB_API_DOT_NET.Controllers
     public class VillaAPIController : ControllerBase
     {
         private ILogger<VillaAPIController> _logger;
+     
         private ApplicationDbContext _db;
-        public VillaAPIController(ILogger<VillaAPIController> logger, ApplicationDbContext db)
+        
+        private IMapper _mapper;
+
+        public VillaAPIController(ILogger<VillaAPIController> logger, ApplicationDbContext db, IMapper mapper)
         {
             _logger = logger;
             _db = db;
+            _mapper = mapper;
+           
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
         {
             _logger.LogInformation("Getting all villas");
-            return Ok( await _db.Villas.ToListAsync());
+            var villa =await _db.Villas.ToListAsync();
+            return Ok(_mapper.Map<IEnumerable<VillaDTO>>(villa));
+         
         }
         //only one villa why no IEnumerable? cause its for list but
         //we want only 1 data details so no enum
 
-        [HttpGet("id")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -45,12 +54,13 @@ namespace WEB_API_DOT_NET.Controllers
                 return BadRequest();
             }
 
-            var villa = _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
+            var villa = await _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
             if (villa == null)
             {
                 return NotFound();
             }
-            return Ok(villa);
+            var villaDTO = _mapper.Map<VillaDTO>(villa);
+            return Ok(villaDTO);
         }
 
         [HttpPost]
@@ -68,19 +78,8 @@ namespace WEB_API_DOT_NET.Controllers
                 ModelState.AddModelError("CustomeError", "Villa already exists!");
                 return BadRequest(ModelState);
             }
-
-            Villa modal = new()
-            {
-                Amenity = villaDTO.Amenity,
-                Details = villaDTO.Details,
-              
-                ImageUrl = villaDTO.ImageUrl,
-                Name = villaDTO.Name,
-                Occupancy = villaDTO.Occupancy,
-                Rate = villaDTO.Rate,
-                Sqft = villaDTO.Sqft,
-            };
-            await _db.Villas.AddAsync(modal);
+            var villa = _mapper.Map<Villa>(villaDTO);
+            await _db.Villas.AddAsync(villa);
             await _db.SaveChangesAsync();
             return Ok(villaDTO);
         }
@@ -100,6 +99,7 @@ namespace WEB_API_DOT_NET.Controllers
             {
                 return NotFound();
             }
+          
            _db.Villas.Remove(villa);
            await _db.SaveChangesAsync();
            return NoContent();
@@ -114,19 +114,9 @@ namespace WEB_API_DOT_NET.Controllers
             {
                 return BadRequest();
             }
-            Villa modal = new()
-            {
-                Amenity = villaDTO.Amenity,
-                Details = villaDTO.Details,
-                Id = villaDTO.Id,
-                ImageUrl = villaDTO.ImageUrl,
-                Name = villaDTO.Name,
-                Occupancy = villaDTO.Occupancy,
-                Rate = villaDTO.Rate,
-                Sqft = villaDTO.Sqft,
-            };
+           var villas = _mapper.Map<Villa>(villaDTO);
 
-            _db.Villas.Update(modal);
+            _db.Villas.Update(villas);
            await _db.SaveChangesAsync();
             return NoContent();
 
@@ -141,36 +131,18 @@ namespace WEB_API_DOT_NET.Controllers
             {
                 return BadRequest();
             }
-            var villa =await _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
+            var villa =await _db.Villas.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
             if (villa == null)
             {
                 return NotFound();
             }
-            VillaUpdateDTO villaDTO = new()
-            {
-                Amenity = villa.Amenity,
-                Details = villa.Details,
-                Id = villa.Id,
-                ImageUrl = villa.ImageUrl,
-                Name = villa.Name,
-                Occupancy = villa.Occupancy,
-                Rate = villa.Rate,
-                Sqft = villa.Sqft,
-
-            };
+            var villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
            
             patchDTO.ApplyTo(villaDTO,ModelState);
 
             // Map back from DTO to tracked entity
-            villa.Amenity = villaDTO.Amenity;
-            villa.Details = villaDTO.Details;
-            villa.ImageUrl = villaDTO.ImageUrl;
-            villa.Name = villaDTO.Name;
-            villa.Occupancy = villaDTO.Occupancy;
-            villa.Rate = villaDTO.Rate;
-            villa.Sqft = villaDTO.Sqft;
+            var villass = _mapper.Map(villaDTO,villa);
 
-            
            await _db.SaveChangesAsync();
             if (!ModelState.IsValid)
             {
