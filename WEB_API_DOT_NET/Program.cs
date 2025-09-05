@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using WEB_API_DOT_NET.Data;
+using WEB_API_DOT_NET.Repository;
+using WEB_API_DOT_NET.Repository.IRepository;
 
 namespace WEB_API_DOT_NET
 {
@@ -20,7 +22,7 @@ namespace WEB_API_DOT_NET
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
-
+            builder.Services.AddScoped<IVillaRepository, VillaRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WEB_API_DOT_NET.Data;
 using WEB_API_DOT_NET.Models;
 using WEB_API_DOT_NET.Models.DTO;
+using WEB_API_DOT_NET.Repository.IRepository;
 
 namespace WEB_API_DOT_NET.Controllers
 {
@@ -13,25 +14,26 @@ namespace WEB_API_DOT_NET.Controllers
     [ApiController]
     public class VillaAPIController : ControllerBase
     {
+        private IVillaRepository _dbVilla;
+
         private ILogger<VillaAPIController> _logger;
      
-        private ApplicationDbContext _db;
+        
         
         private IMapper _mapper;
 
-        public VillaAPIController(ILogger<VillaAPIController> logger, ApplicationDbContext db, IMapper mapper)
+        public VillaAPIController(ILogger<VillaAPIController> logger, IMapper mapper, IVillaRepository dbVilla)
         {
-            _logger = logger;
-            _db = db;
+            _logger = logger;           
             _mapper = mapper;
-           
+            _dbVilla = dbVilla;  
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
         {
             _logger.LogInformation("Getting all villas");
-            var villa =await _db.Villas.ToListAsync();
+            var villa =await _dbVilla.GetAllAsync();
             return Ok(_mapper.Map<IEnumerable<VillaDTO>>(villa));
          
         }
@@ -54,7 +56,7 @@ namespace WEB_API_DOT_NET.Controllers
                 return BadRequest();
             }
 
-            var villa = await _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
+            var villa = await _dbVilla.GetAsync(u => u.Id == id);
             if (villa == null)
             {
                 return NotFound();
@@ -73,14 +75,14 @@ namespace WEB_API_DOT_NET.Controllers
             {
                 return BadRequest(villaDTO);
             }
-            if( await _db.Villas.FirstOrDefaultAsync(u=>u.Name.ToLower()==villaDTO.Name.ToLower())!=null)
+            if( await _dbVilla.GetAsync(u=>u.Name.ToLower()==villaDTO.Name.ToLower())!=null)
             {
                 ModelState.AddModelError("CustomeError", "Villa already exists!");
                 return BadRequest(ModelState);
             }
             var villa = _mapper.Map<Villa>(villaDTO);
-            await _db.Villas.AddAsync(villa);
-            await _db.SaveChangesAsync();
+            await _dbVilla.CreateAsync(villa);
+            await _dbVilla.SaveAsync();
             return Ok(villaDTO);
         }
         [HttpDelete("id")]
@@ -93,15 +95,14 @@ namespace WEB_API_DOT_NET.Controllers
             {
                 return BadRequest();
             }
-            var villa =await _db.Villas.FirstOrDefaultAsync(u=> u.Id==id);
+            var villa =await _dbVilla.GetAsync(u=> u.Id==id);
 
             if (villa == null)
             {
                 return NotFound();
             }
-          
-           _db.Villas.Remove(villa);
-           await _db.SaveChangesAsync();
+         await _dbVilla.RemoveAsync(villa);
+           await _dbVilla.SaveAsync();
            return NoContent();
         }
         [HttpPut("id")]
@@ -116,8 +117,8 @@ namespace WEB_API_DOT_NET.Controllers
             }
            var villas = _mapper.Map<Villa>(villaDTO);
 
-            _db.Villas.Update(villas);
-           await _db.SaveChangesAsync();
+           await _dbVilla.UpdateAsync(villas);
+           await _dbVilla.SaveAsync();
             return NoContent();
 
         }
@@ -131,7 +132,7 @@ namespace WEB_API_DOT_NET.Controllers
             {
                 return BadRequest();
             }
-            var villa =await _db.Villas.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+            var villa =await _dbVilla.GetAsync(u => u.Id == id,tracked:false);
             if (villa == null)
             {
                 return NotFound();
@@ -143,7 +144,7 @@ namespace WEB_API_DOT_NET.Controllers
             // Map back from DTO to tracked entity
             var villass = _mapper.Map(villaDTO,villa);
 
-           await _db.SaveChangesAsync();
+           await _dbVilla.SaveAsync();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
