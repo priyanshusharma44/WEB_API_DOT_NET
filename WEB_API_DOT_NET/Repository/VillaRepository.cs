@@ -20,7 +20,5 @@ namespace WEB_API_DOT_NET.Repository
             await _db.SaveChangesAsync();
             return villa;
         }
-
-     
     }
 }
