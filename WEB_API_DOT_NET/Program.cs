@@ -23,6 +23,7 @@ namespace WEB_API_DOT_NET
             builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
             builder.Services.AddScoped<IVillaRepository, VillaRepository>();
+            builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

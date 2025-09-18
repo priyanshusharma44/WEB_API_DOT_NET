@@ -11,6 +11,10 @@ namespace WEB_API_DOT_NET
            CreateMap<Villa,VillaDTO>().ReverseMap();
             CreateMap<Villa, VillaCreateDTO>().ReverseMap();
             CreateMap<Villa,VillaUpdateDTO>().ReverseMap();
+
+            CreateMap<VillaNumber,VillaNumberDTO>().ReverseMap();
+            CreateMap<VillaNumber,VillaCreateDTO>().ReverseMap();
+            CreateMap<VillaNumber, VillaUpdateDTO>().ReverseMap();
         
         
         }
