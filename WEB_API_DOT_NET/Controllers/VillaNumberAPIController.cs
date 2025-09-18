@@ -11,7 +11,7 @@ using WEB_API_DOT_NET.Repository.IRepository;
 
 namespace WEB_API_DOT_NET.Controllers
 {
-    [Route("api/VillaAPI")]
+    [Route("api/VillaNumberAPI")]
     [ApiController]
     public class VillaNumberAPIController : ControllerBase
     {
@@ -38,7 +38,7 @@ namespace WEB_API_DOT_NET.Controllers
             {
                 _logger.LogInformation("Getting all villaNumbers");
                 var villaList = await _dbVilla.GetAllAsync();
-                _response.Result = _mapper.Map<IEnumerable<VillaNumber>>(villaList);
+                _response.Result = _mapper.Map<IEnumerable<VillaNumberDTO>>(villaList);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -57,18 +57,18 @@ namespace WEB_API_DOT_NET.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetVillas(int villano)
+        public async Task<ActionResult<APIResponse>> GetVillas(int id)
         {
             try
             {
-                if (villano == 0)
+                if (id == 0)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
                     return BadRequest(_response);
                 }
 
-                var villa = await _dbVilla.GetAsync(u => u.VillaNo == villano);
+                var villa = await _dbVilla.GetAsync(u => u.VillaNo == id);
                 if (villa == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -76,7 +76,7 @@ namespace WEB_API_DOT_NET.Controllers
                     return NotFound(_response);
                 }
 
-                _response.Result = _mapper.Map<VillaDTO>(villa);
+                _response.Result = _mapper.Map<VillaNumberDTO>(villa);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -105,7 +105,7 @@ namespace WEB_API_DOT_NET.Controllers
                     return BadRequest(_response);
                 }
 
-                if (await _dbVilla.GetAsync(u => u.SpecialDetails.ToLower() == villaCreateDTO.SpecialDetails.ToLower()) != null)
+                if (await _dbVilla.GetAsync(u => u.VillaNo == villaCreateDTO.VillaNo) != null)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
@@ -117,7 +117,7 @@ namespace WEB_API_DOT_NET.Controllers
                 await _dbVilla.CreateAsync(villa);
                 await _dbVilla.SaveAsync();
 
-                _response.Result = _mapper.Map<VillaCreateDTO>(villa);
+                _response.Result = _mapper.Map<VillaNumberCreateDTO>(villa);
                 _response.StatusCode = HttpStatusCode.Created;
                 _response.IsSuccess = true;
 
@@ -137,18 +137,18 @@ namespace WEB_API_DOT_NET.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> Delete(int villano)
+        public async Task<ActionResult<APIResponse>> Delete(int id)
         {
             try
             {
-                if (villano == 0)
+                if (id == 0)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
                     return BadRequest(_response);
                 }
 
-                var villa = await _dbVilla.GetAsync(u => u.VillaNo == villano);
+                var villa = await _dbVilla.GetAsync(u => u.VillaNo == id);
                 if (villa == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -209,18 +209,18 @@ namespace WEB_API_DOT_NET.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> UpdatePartialVilla(int villano, JsonPatchDocument<VillaNumberUpdateDTO> patchDTO)
+        public async Task<ActionResult<APIResponse>> UpdatePartialVilla(int id, JsonPatchDocument<VillaNumberUpdateDTO> patchDTO)
         {
             try
             {
-                if (patchDTO == null || villano == 0)
+                if (patchDTO == null || id == 0)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
                     return BadRequest(_response);
                 }
 
-                var villa = await _dbVilla.GetAsync(u => u.VillaNo == villano, tracked: false);
+                var villa = await _dbVilla.GetAsync(u => u.VillaNo == id, tracked: false);
                 if (villa == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -232,6 +232,7 @@ namespace WEB_API_DOT_NET.Controllers
                 patchDTO.ApplyTo(villaDTO, ModelState);
 
                 var updatedVilla = _mapper.Map(villaDTO, villa);
+                await _dbVilla.UpdateAsync(updatedVilla);
                 await _dbVilla.SaveAsync();
 
                 if (!ModelState.IsValid)

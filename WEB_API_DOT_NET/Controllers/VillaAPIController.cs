@@ -231,6 +231,7 @@ namespace WEB_API_DOT_NET.Controllers
                 patchDTO.ApplyTo(villaDTO, ModelState);
 
                 var updatedVilla = _mapper.Map(villaDTO, villa);
+                await _dbVilla.UpdateAsync(updatedVilla);
                 await _dbVilla.SaveAsync();
 
                 if (!ModelState.IsValid)

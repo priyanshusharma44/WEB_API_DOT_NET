@@ -16,7 +16,7 @@ namespace WEB_API_DOT_NET.Repository
         public async Task<VillaNumber> UpdateAsync(VillaNumber villa)
         {
             villa.UpdatedDate = DateTime.Now;
-            _db.VillaNumbers.Update(villa);
+            _db.Update(villa);
             await _db.SaveChangesAsync();
             return villa;
         }
