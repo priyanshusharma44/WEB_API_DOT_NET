@@ -7,6 +7,12 @@ namespace WEB_API_DOT_NET.Models
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int VillaNo { get; set; }
+
+        [ForeignKey("Villa")]
+        public int VilaID { get; set; }
+
+        public Villa Villa { get; set; }
+
         public string SpecialDetails { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
