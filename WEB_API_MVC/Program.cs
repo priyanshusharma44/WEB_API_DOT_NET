@@ -1,3 +1,7 @@
+using System.Net.Http.Headers;
+using WEB_API_MVC.Services;
+using WEB_API_MVC.Services.IServices;
+
 namespace WEB_API_MVC
 {
     public class Program
@@ -9,6 +13,14 @@ namespace WEB_API_MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
+          
+            builder.Services.AddHttpClient("MagicAPI", client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:VillaAPI"]);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            });
+            builder.Services.AddScoped<IVillaService, VillaService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -16,7 +16,6 @@ namespace WEB_API_MVC.Services
             this.responseModel = new APIResponse();
             this.httpClient = httpClient;
         }
-
         public async Task<T> SendAsync<T>(ApiRequest apiRequest)
         {
             try
@@ -42,7 +41,6 @@ namespace WEB_API_MVC.Services
                         message.Method = HttpMethod.Get;
                         break;
                 }
-
                 // Add body only if data is provided
                 if (apiRequest.Data != null)
                 {
@@ -52,7 +50,6 @@ namespace WEB_API_MVC.Services
                         "application/json"
                     );
                 }
-
                 // Send request
                 HttpResponseMessage apiResponse = await client.SendAsync(message);
                 var apiContent = await apiResponse.Content.ReadAsStringAsync();
