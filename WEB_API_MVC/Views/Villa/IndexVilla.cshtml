@@ -1,0 +1,35 @@
+﻿@model IEnumerable<WEB_API_MVC.Models.DTO.VillaDTO>
+
+@{
+    ViewData["Title"] = "Villas";
+}
+
+<h2>Villas List</h2>
+
+<p>
+    <a asp-action="CreateVilla" class="btn btn-primary">Create New Villa</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Details</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var villa in Model)
+        {
+            <tr>
+                <td>@villa.Name</td>
+                <td>@villa.Sqft</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@villa.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="EditVilla" asp-route-id="@villa.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="DeleteVilla" asp-route-id="@villa.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
