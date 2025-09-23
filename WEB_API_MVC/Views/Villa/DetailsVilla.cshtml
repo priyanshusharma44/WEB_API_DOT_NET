@@ -1,0 +1,34 @@
+﻿@model WEB_API_MVC.Models.DTO.VillaDTO
+@{
+    
+        ViewBag.Title = "DetailsVilla";
+    
+
+}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>DETAILS</th>
+        <th>NAME</th>
+        <th>RATE</th>
+        <th>SQFT</th>
+        <th>OCCUPANCY</th>
+        <th>IMGURL</th>
+        <th>AMINITY</th>
+    </tr>
+
+  
+          <tr>
+              <th>@Model.Id</th>
+              <th>@Model.Details</th>
+              <th>@Model.Name</th>
+              <th>@Model.Rate</th>
+              <th>@Model.Sqft</th>
+              <th>@Model.Occupancy</th>
+              <th>@Model.ImageUrl</th>
+              <th>@Model.Amenity</th>
+          </tr>  
+        
+       
+   
+</table>

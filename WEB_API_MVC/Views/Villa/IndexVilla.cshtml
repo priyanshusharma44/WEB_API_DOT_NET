@@ -25,7 +25,8 @@
                 <td>@villa.Name</td>
                 <td>@villa.Sqft</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@villa.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="DetailsVilla" asp-route-id="@villa.Id" class="btn btn-info btn-sm">Details</a>
+
                     <a asp-action="EditVilla" asp-route-id="@villa.Id" class="btn btn-warning btn-sm">Edit</a>
                     <a asp-action="DeleteVilla" asp-route-id="@villa.Id" class="btn btn-danger btn-sm">Delete</a>
                 </td>

@@ -1,31 +1,50 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WEB_API_MVC.Models;
+using Newtonsoft.Json;
 using WEB_API_MVC.Models.DTO;
 using WEB_API_MVC.Services.IServices;
+using Villa_Utility;
+using WEB_API_MVC.Models;
 
 namespace WEB_API_MVC.Controllers
 {
     public class VillaController : Controller
     {
         private readonly IVillaService _villaService;
+
         public VillaController(IVillaService villaService)
         {
             _villaService = villaService;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+
+        [HttpGet]
         public async Task<IActionResult> IndexVilla()
         {
-            var response = await _villaService.GetAllAsync<APIResponse>();
-            if(response! == null)
-            {
-                var villas = response.Result;
-                return View(villas);
-            }
-            return View(new List<VillaDTO>());
+            List<VillaDTO> list = new();
 
+            var response = await _villaService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
+            }
+
+            return View(list);
         }
+        [HttpGet]
+        public async Task<IActionResult> DetailsVilla(int id)
+        {
+            if (id == 0)
+                return BadRequest();
+
+            var response = await _villaService.GetAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                // Deserialize to a single VillaDTO object
+                var villa = JsonConvert.DeserializeObject<VillaDTO>(Convert.ToString(response.Result));
+                return View(villa); // Pass the single villa to the view
+            }
+
+            return NotFound();
+        }
+
     }
 }
