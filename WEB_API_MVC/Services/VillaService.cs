@@ -14,15 +14,17 @@ namespace WEB_API_MVC.Services
             _clientFactory = clientFactory;
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
         }
-        
-        public Task<T> CreateAsync<T>(VillaCreateDTO dto)
+
+        public Task<T> CreateAsync<T>(VillaDTO dto)
         {
             return SendAsync<T>(new ApiRequest
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,   
+                Data = dto,                  
                 Url = $"{villaUrl}/api/VillaAPI"
             });
         }
+
 
         public Task<T> DeleteAsync<T>(int id)
         {
@@ -61,5 +63,6 @@ namespace WEB_API_MVC.Services
                 Url = $"{villaUrl}/api/VillaAPI/{dto.Id}"
             });
         }
+       
     }
 }

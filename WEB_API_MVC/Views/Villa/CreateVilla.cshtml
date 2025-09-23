@@ -1,0 +1,55 @@
+﻿@model WEB_API_MVC.Models.DTO.VillaDTO
+
+@{
+    ViewBag.Title = "Create Villa";
+}
+
+<h2>Create New Villa</h2>
+
+<form asp-action="CreateVilla" method="post">
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Details" class="form-label"></label>
+        <textarea asp-for="Details" class="form-control"></textarea>
+        <span asp-validation-for="Details" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Rate" class="form-label"></label>
+        <input asp-for="Rate" class="form-control" type="number" />
+        <span asp-validation-for="Rate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Sqft" class="form-label"></label>
+        <input asp-for="Sqft" class="form-control" type="number" />
+        <span asp-validation-for="Sqft" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Occupancy" class="form-label"></label>
+        <input asp-for="Occupancy" class="form-control" type="number" />
+        <span asp-validation-for="Occupancy" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="ImageUrl" class="form-label"></label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Amenity" class="form-label"></label>
+        <input asp-for="Amenity" class="form-control" />
+        <span asp-validation-for="Amenity" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-action="IndexVilla" class="btn btn-secondary">Cancel</a>
+</form>
+

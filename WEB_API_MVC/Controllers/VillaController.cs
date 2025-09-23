@@ -45,6 +45,26 @@ namespace WEB_API_MVC.Controllers
 
             return NotFound();
         }
+        [HttpGet]
+      public async Task<IActionResult> CreateVilla()
+        {
+            return View();  
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVilla(VillaDTO villaDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _villaService.CreateAsync<APIResponse>(villaDTO);
+
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexVilla));
+                }
+            }
+            return View(villaDTO);
+        }
 
     }
 }
