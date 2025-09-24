@@ -31,6 +31,7 @@ namespace WEB_API_MVC.Services
             return SendAsync<T>(new ApiRequest
             {
                 ApiType = SD.ApiType.DELETE,
+                
                 Url = $"{villaUrl}/api/VillaAPI/{id}"
             });
 

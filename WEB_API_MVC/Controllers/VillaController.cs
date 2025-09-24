@@ -65,6 +65,38 @@ namespace WEB_API_MVC.Controllers
             }
             return View(villaDTO);
         }
+        [HttpGet]
+        public async Task<IActionResult> DeleteVilla(int id)
+        {
+            if(id == 0) return BadRequest();
+            var response = await _villaService.GetAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                // Deserialize to a single VillaDTO object
+                var villa = JsonConvert.DeserializeObject<VillaDTO>(Convert.ToString(response.Result));
+                return View(villa); // Pass the single villa to the view
+            }
+
+            return NotFound();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteVillaConfirmed(int id)
+        {
+        if (id == 0)    
+        return BadRequest();
+
+        var response = await _villaService.DeleteAsync<APIResponse>(id);
+        if(response != null && response.IsSuccess)
+            {
+                TempData["success"] = "Villa Deleted Successfully";
+                return RedirectToAction(nameof(IndexVilla));
+            }
+            TempData["failed"] = "Villa Deleted Unsuccessful";
+            return RedirectToAction(nameof(IndexVilla));
+
+        }
+            
 
     }
 }
