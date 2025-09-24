@@ -1,0 +1,53 @@
+﻿@model WEB_API_MVC.Models.DTO.VillaUpdateDTO
+
+@{
+    ViewData["Title"] = "UpdateVilla";
+}
+
+<h1>Edit Villa</h1>
+
+<h3>Are you sure you want to Update this villa?</h3>
+
+<form asp-action="UpdateVillaConfirmed1" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Details" class="form-label"></label>
+        <input asp-for="Details" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Rate" class="form-label"></label>
+        <input asp-for="Rate" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Sqft" class="form-label"></label>
+        <input asp-for="Sqft" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Occupancy" class="form-label"></label>
+        <input asp-for="Occupancy" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ImageUrl" class="form-label"></label>
+        <input asp-for="ImageUrl" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Amenity" class="form-label"></label>
+        <input asp-for="Amenity" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Update</button>
+    <a asp-action="IndexVilla" class="btn btn-secondary">Back to List</a>
+</form>
+

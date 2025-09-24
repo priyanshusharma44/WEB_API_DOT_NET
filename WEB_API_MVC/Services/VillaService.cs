@@ -1,69 +1,70 @@
-﻿using Villa_Utility;
-using WEB_API_MVC.Models;
-using WEB_API_MVC.Models.DTO;
-using WEB_API_MVC.Services.IServices;
+﻿    using Villa_Utility;
+    using WEB_API_MVC.Models;
+    using WEB_API_MVC.Models.DTO;
+    using WEB_API_MVC.Services.IServices;
 
-namespace WEB_API_MVC.Services
-{
-    public class VillaService : BaseService, IVillaService
+    namespace WEB_API_MVC.Services
     {
-        private readonly IHttpClientFactory _clientFactory;
-        private string villaUrl;
-        public VillaService(IHttpClientFactory clientFactory, IConfiguration configuration): base(clientFactory) 
+        public class VillaService : BaseService, IVillaService
         {
-            _clientFactory = clientFactory;
-            villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
-        }
-
-        public Task<T> CreateAsync<T>(VillaDTO dto)
-        {
-            return SendAsync<T>(new ApiRequest
+            private readonly IHttpClientFactory _clientFactory;
+            private string villaUrl;
+            public VillaService(IHttpClientFactory clientFactory, IConfiguration configuration): base(clientFactory) 
             {
-                ApiType = SD.ApiType.POST,   
-                Data = dto,                  
-                Url = $"{villaUrl}/api/VillaAPI"
-            });
-        }
+                _clientFactory = clientFactory;
+                villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
+            }
 
-
-        public Task<T> DeleteAsync<T>(int id)
-        {
-            return SendAsync<T>(new ApiRequest
+            public Task<T> CreateAsync<T>(VillaDTO dto)
             {
-                ApiType = SD.ApiType.DELETE,
+                return SendAsync<T>(new ApiRequest
+                {
+                    ApiType = SD.ApiType.POST,   
+                    Data = dto,                  
+                    Url = $"{villaUrl}/api/VillaAPI"
+                });
+            }
+
+
+            public Task<T> DeleteAsync<T>(int id)
+            {
+                return SendAsync<T>(new ApiRequest
+                {
+                    ApiType = SD.ApiType.DELETE,
                 
-                Url = $"{villaUrl}/api/VillaAPI/{id}"
-            });
+                    Url = $"{villaUrl}/api/VillaAPI/{id}"
+                });
 
-        }
+            }
 
-        public Task<T> GetAllAsync<T>()
-        {
-            return SendAsync<T>(new ApiRequest
+            public Task<T> GetAllAsync<T>()
             {
-                ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/VillaAPI"
-            });
-        }
+                return SendAsync<T>(new ApiRequest
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/VillaAPI"
+                });
+            }
 
-        public Task<T> GetAsync<T>(int id)
-        {
-            return SendAsync<T>(new ApiRequest
+            public Task<T> GetAsync<T>(int id)
             {
-                ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/VillaAPI/{id}"
-            });
-        }
+                return SendAsync<T>(new ApiRequest
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/VillaAPI/{id}"
+                });
+            }
 
-        public Task<T> UpdateAsync<T>(VillaUpdateDTO dto)
-        {
-            return SendAsync<T>(new ApiRequest
-
+            public Task<T> UpdateAsync<T>(VillaUpdateDTO dto)
             {
-                ApiType = SD.ApiType.PUT,
-                Url = $"{villaUrl}/api/VillaAPI/{dto.Id}"
-            });
-        }
+                return SendAsync<T>(new ApiRequest
+
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = dto,
+                    Url = $"{villaUrl}/api/VillaAPI/{dto.Id}"
+                });
+            }
        
+        }
     }
-}

@@ -96,7 +96,39 @@ namespace WEB_API_MVC.Controllers
             return RedirectToAction(nameof(IndexVilla));
 
         }
-            
+        [HttpGet]
+        public async Task<IActionResult> UpdateVilla(int id)
+        {
+            if (id == 0)
+                return BadRequest();
+
+            var response = await _villaService.GetAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                var villa = JsonConvert.DeserializeObject<VillaUpdateDTO>(Convert.ToString(response.Result));
+                return View(villa);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateVillaConfirmed1(VillaUpdateDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var response = await _villaService.UpdateAsync<APIResponse>(dto);
+            if (response!=null && response.IsSuccess)
+            {
+                TempData["success"] = "Villa Updated Successfully";
+                return RedirectToAction(nameof(IndexVilla));
+            }
+            TempData["failed"] = "Villa Didn't Updated. ERROR";
+            return RedirectToAction(nameof(IndexVilla));
+        }
 
     }
 }
