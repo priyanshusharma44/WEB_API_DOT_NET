@@ -21,6 +21,7 @@ namespace WEB_API_MVC
 
             });
             builder.Services.AddScoped<IVillaService, VillaService>();
+            builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
